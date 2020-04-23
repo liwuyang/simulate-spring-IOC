@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans injectType = "byName"><!--injectType = "byType"-->
+
+    <bean id = "userDaoImplFirst" class = "com.lwy.dao.UserDaoImplFirst">
+    </bean>
+
+    <bean id = "userDaoImplSecond" class = "com.lwy.dao.UserDaoImplSecond">
+    </bean>
+
+    <bean id = "userDaoImplThird" class = "com.lwy.dao.UserDaoImplThird">
+    </bean>
+
+    <bean id = "userDaoImplFourth" class = "com.lwy.dao.UserDaoImplFourth">
+    </bean>
+
+    <bean id = "userServiceImplProp" class="com.lwy.service.UserServiceImplProp">
+        <property name = "userDaoImplFirst" ref = "userDaoImplFirst"></property>
+        <property name = "userDaoImplSecond" ref = "userDaoImplSecond"></property>
+    </bean>
+
+    <bean id = "userServiceImplCons" class="com.lwy.service.UserServiceImplCons">
+        <constructor-arg name = "userDaoImplFirst" ref = "userDaoImplFirst"></constructor-arg>
+        <constructor-arg name = "userDaoImplSecond" ref = "userDaoImplSecond"></constructor-arg>
+    </bean>
+
+    <bean id = "userServiceImplPropAndCons" class="com.lwy.service.UserServiceImplPropAndCons">
+        <property name = "userDaoImplFirst" ref = "userDaoImplFirst"></property>
+        <constructor-arg name = "userDaoImplSecond" ref = "userDaoImplSecond"></constructor-arg>
+        <property name = "userDaoImplThird" ref = "userDaoImplThird"></property>
+        <constructor-arg name = "userDaoImplFourth" ref = "userDaoImplFourth"></constructor-arg>
+    </bean>
+
+    <!--<bean id = "userServiceImplByType" class = "com.lwy.service.UserServiceImplByType">
+    </bean>-->
+
+    <bean id = "userServiceImplByName" class = "com.lwy.service.UserServiceImplByName">
+    </bean>
+
+</beans>
