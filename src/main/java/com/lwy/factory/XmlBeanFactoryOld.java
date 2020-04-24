@@ -11,7 +11,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public class BeanFactory {
+/**
+ * 完成的第一版，只能在xml中确定定义的顺序，才能注入成功
+ * 如：B里面需要注入A，那么A必须在B之前实例化
+ * 同时，代码比较冗余
+ */
+public class XmlBeanFactoryOld {
 
     // 最终解析完XML后，所有对象的集合（包括依赖关系）
     Map<String, Object> map = new HashMap<String, Object>();
@@ -21,7 +26,7 @@ public class BeanFactory {
      *
      * @param xmlName
      */
-    public BeanFactory(String xmlName) {
+    public XmlBeanFactoryOld(String xmlName) {
         parseXml(xmlName);
     }
 

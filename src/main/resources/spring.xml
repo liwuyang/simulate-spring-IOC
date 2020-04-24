@@ -2,6 +2,9 @@
 
 <beans injectType = "byName"><!--injectType = "byType"-->
 
+    <bean id = "userServiceImplByName" class = "com.lwy.service.UserServiceImplByName">
+    </bean>
+
     <bean id = "userDaoImplFirst" class = "com.lwy.dao.UserDaoImplFirst">
     </bean>
 
@@ -33,8 +36,5 @@
 
     <!--<bean id = "userServiceImplByType" class = "com.lwy.service.UserServiceImplByType">
     </bean>-->
-
-    <bean id = "userServiceImplByName" class = "com.lwy.service.UserServiceImplByName">
-    </bean>
 
 </beans>

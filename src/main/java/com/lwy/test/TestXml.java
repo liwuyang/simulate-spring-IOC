@@ -1,13 +1,13 @@
 package com.lwy.test;
 
-import com.lwy.factory.BeanFactory;
+import com.lwy.factory.XmlBeanFactory;
 import com.lwy.service.UserService;
 
-public class Test {
+public class TestXml {
 
     public static void main(String[] args) {
 
-        BeanFactory beanFactory = new BeanFactory("spring.xml");
+        XmlBeanFactory beanFactory = new XmlBeanFactory("spring.xml");
 
         UserService userServiceImplProp = (UserService) beanFactory.getBean("userServiceImplProp");
 
