@@ -13,6 +13,8 @@ import java.util.*;
 
 /**
  * XML配置依赖注入完整版
+ *
+ * @author lwy
  */
 public class XmlBeanFactory {
 
