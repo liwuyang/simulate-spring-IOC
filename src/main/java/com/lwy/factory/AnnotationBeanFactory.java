@@ -436,7 +436,8 @@ public class AnnotationBeanFactory {
 
                     if (waitForInstanceTempMap == null || waitForInstanceTempMap.size() == 0) { // 未实例化中没有符合类型的，那么就注入这个
 
-                        autoInjectObjectMap.put(autoInjectField, instancedTempMap.get(autoInjectFieldName));
+                        // 这里需要把这个map中唯一的值取出来，因为他的名称可能和属性名不一样，所以需要这样取
+                        autoInjectObjectMap.put(autoInjectField, instancedTempMap.get(instancedTempMap.keySet().iterator().next()));
 
                     } else { // 未实例化的里面有，不管一个还是多个，都得分别byName判断
 
