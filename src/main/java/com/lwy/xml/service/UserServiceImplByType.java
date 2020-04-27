@@ -1,6 +1,6 @@
-package com.lwy.service;
+package com.lwy.xml.service;
 
-import com.lwy.dao.UserDao;
+import com.lwy.xml.dao.UserDao;
 
 /**
  * 测试自动装配，byType
@@ -11,9 +11,9 @@ public class UserServiceImplByType implements UserService {
 
     public void find() {
 
-        userDaoImplFirst.query();
-
         System.out.println("--------------------UserServiceImplByType");
+
+        userDaoImplFirst.query();
 
     }
 

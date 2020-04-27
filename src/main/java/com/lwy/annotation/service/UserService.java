@@ -1,4 +1,4 @@
-package com.lwy.service;
+package com.lwy.annotation.service;
 
 public interface UserService {
 

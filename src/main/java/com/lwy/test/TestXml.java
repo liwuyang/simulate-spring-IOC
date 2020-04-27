@@ -1,7 +1,8 @@
 package com.lwy.test;
 
+import com.lwy.xml.controller.UserController;
 import com.lwy.factory.XmlBeanFactory;
-import com.lwy.service.UserService;
+import com.lwy.xml.service.UserService;
 
 public class TestXml {
 
@@ -19,11 +20,14 @@ public class TestXml {
 
         UserService userServiceImplByName = (UserService) beanFactory.getBean("userServiceImplByName");
 
+        UserController userControllerXml = (UserController) beanFactory.getBean("userControllerXml");
+
         userServiceImplProp.find();
         userServiceImplCons.find();
         userServiceImplPropAndCons.find();
 //        userServiceImplByType.find();
         userServiceImplByName.find();
+        userControllerXml.get();
 
     }
 

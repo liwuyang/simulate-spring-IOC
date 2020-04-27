@@ -1,6 +1,6 @@
-package com.lwy.service;
+package com.lwy.xml.service;
 
-import com.lwy.dao.UserDao;
+import com.lwy.xml.dao.UserDao;
 
 /**
  * 测试手动装配，setter与构造方法装配同时存在
@@ -17,12 +17,12 @@ public class UserServiceImplPropAndCons implements UserService {
 
     public void find() {
 
+        System.out.println("--------------------UserServiceImplPropAndCons");
+
         userDaoImplFirst.query();
         userDaoImplSecond.query();
         userDaoImplThird.query();
         userDaoImplFourth.query();
-
-        System.out.println("--------------------UserServiceImplPropAndCons");
 
     }
 

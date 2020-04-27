@@ -1,6 +1,6 @@
-package com.lwy.service;
+package com.lwy.xml.service;
 
-import com.lwy.dao.UserDao;
+import com.lwy.xml.dao.UserDao;
 
 /**
  * 测试手动装配，setter
@@ -13,10 +13,10 @@ public class UserServiceImplProp implements UserService {
 
     public void find() {
 
+        System.out.println("--------------------UserServiceImplProp");
+
         userDaoImplFirst.query();
         userDaoImplSecond.query();
-
-        System.out.println("--------------------UserServiceImplProp");
 
     }
 

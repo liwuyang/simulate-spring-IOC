@@ -29,6 +29,8 @@ public class XmlBeanFactory {
     public XmlBeanFactory(String xmlName) {
         this.xmlName = xmlName;
         parseXml(xmlName);
+
+        System.out.println(instancedMap);
     }
 
     /**
@@ -48,11 +50,13 @@ public class XmlBeanFactory {
      * 2、循环<bean>，如果<bean>下面还有子标签，则先存起来，之后再进行处理，
      * 因为可能这个bean所需要引入的依赖在xml配置中在他位置后面
      * 3、<bean>下面没有子标签的情况下，判断是否自动装配
-     * 4、如果是自动装配，且配置了自动装配的方式且有属性需要装配，那么也存起来，之后再进行处理，原因同2，
-     * 没有属性需要自动装配，直接实例化
-     * 没有配置自动装配方式，直接实例化
-     * 5、如果不是自动装配，直接实例化
-     * 6、循环完<bean>之后，写一个死循环，里面去循环等待实例化的<bean>
+     *  （1）如果是自动装配，判断是否配置了自动装配的方式
+     *      （1）配置了自动装配方式，判断是否有属性需要装配
+     *          （1）有属性需要装配，那么也存起来，之后再进行处理，原因同2
+     *          （2）没有属性需要自动装配，直接实例化
+     *      （2）没有配置自动装配方式，直接实例化
+     *  （2）如果不是自动装配，直接实例化
+     * 4、循环完<bean>之后，写一个死循环，里面去循环等待实例化的<bean>
      * 之所以写死循环，是因为等待实例化的bean中，他所依赖的bean可能也在等待实例化，同时顺序在他后面
      *
      * @param xmlName
@@ -116,7 +120,15 @@ public class XmlBeanFactory {
                     /**
                      * 先存起来的意义在于解决xml中配置顺序问题，解决A中需要依赖B，那么B必须先实例化的问题
                      */
-                    waitForInstanceMap.put(beanName, childElementFirstLevel);
+                    if (waitForInstanceMap.get(beanName) != null || instancedMap.get(beanName) != null) {
+
+                        throw new MyException(beanName + "-----在容器中已存在！");
+
+                    } else {
+
+                        waitForInstanceMap.put(beanName, childElementFirstLevel);
+
+                    }
 
                 } else { // 没有二级子节点的情况下，判断是否自动装配
 
@@ -129,14 +141,22 @@ public class XmlBeanFactory {
 
                             if (autoByTypeFields != null && autoByTypeFields.length > 0) { // 有属性需要自动装配，之后处理
 
-                                waitForInstanceMap.put(beanName, childElementFirstLevel);
+                                if (waitForInstanceMap.get(beanName) != null || instancedMap.get(beanName) != null) {
+
+                                    throw new MyException(beanName + "-----在容器中已存在！");
+
+                                } else {
+
+                                    waitForInstanceMap.put(beanName, childElementFirstLevel);
+
+                                }
 
                             } else { // 无属性需要自动装配，直接实例化对象
 
                                 instanceObject = instanceClass.newInstance();
 
                                 // 实例化好的bean放入容器放入
-                                putInstancedObjectIntoContainer(beanName, instanceObject);
+                                putInstancedObjectIntoContainer(beanName, instanceObject, waitForInstanceMap);
 
                             }
 
@@ -145,7 +165,7 @@ public class XmlBeanFactory {
                             instanceObject = instanceClass.newInstance();
 
                             // 实例化好的bean放入容器放入
-                            putInstancedObjectIntoContainer(beanName, instanceObject);
+                            putInstancedObjectIntoContainer(beanName, instanceObject, waitForInstanceMap);
 
                         }
 
@@ -154,7 +174,7 @@ public class XmlBeanFactory {
                         instanceObject = instanceClass.newInstance();
 
                         // 实例化好的bean放入容器放入
-                        putInstancedObjectIntoContainer(beanName, instanceObject);
+                        putInstancedObjectIntoContainer(beanName, instanceObject, waitForInstanceMap);
 
                     }
 
@@ -220,8 +240,8 @@ public class XmlBeanFactory {
 
                     } else {
 
-                        // 实例化好的bean放入容器放入
-                        putInstancedObjectIntoContainer(beanName, instanceObject);
+                        // 将实例化后的对象放入map
+                        instancedMap.put(beanName, instanceObject);
 
                         beanNameList.add(beanName);
 
@@ -254,14 +274,15 @@ public class XmlBeanFactory {
     /**
      * 将实例化好的bean放到容器中
      *
-     * @param beanName       实例名称
-     * @param instanceObject 实例对象
+     * @param beanName              实例名称
+     * @param instanceObject        实例对象
+     * @param waitForInstanceMap    等待实例化map
      * @throws MyException
      */
-    public void putInstancedObjectIntoContainer(String beanName, Object instanceObject) throws MyException {
+    public void putInstancedObjectIntoContainer(String beanName, Object instanceObject, Map<String, Element> waitForInstanceMap) throws MyException {
 
         // 判断容器中是否已有该name的bean
-        if (instancedMap.get(beanName) != null) {
+        if (instancedMap.get(beanName) != null || waitForInstanceMap.get(beanName) != null) {
 
             throw new MyException(beanName + "-----在容器中已存在！");
 
@@ -282,7 +303,7 @@ public class XmlBeanFactory {
      * （1）prop标签情况下，从容器中取出所有prop标签引用的对象，放入一个map中，最后处理
      * 因为可能有多个prop标签，而且cons标签与prop标签可能同时存在，得先处理cons标签，然后通过构造方法得到对象，才能再进行setter
      * （2）cons标签情况下，从容器中取出所有cons标签引用的对象，放入list中，同时取出他们所对应的类型，
-     * 也放入一个list中
+     * 也放入一个list中，因为可能有多个cons标签，需要将cons标签同时处理，得到符合条件的构造方法
      * 2、判断是否需要通过有参的构造方法去实例化对象，之后进行实例化
      * 3、将需要set的属性set进去
      * 4、返回实例化对象
@@ -501,8 +522,10 @@ public class XmlBeanFactory {
                     // waitForInstanceMap中存的是一级子标签，所以获取到class对应的值就是全类名
                     String autoByTypeTempClassName = waitForInstanceMap.get(key).attributeValue("class");
 
+                    Class autoByTypeTempClass = Class.forName(autoByTypeTempClassName).getInterfaces()[0];
+
                     // 判断waitForInstanceMap中一级子标签配置的类的类型和属性类型是否相同
-                    if (autoByTypeTempClassName.equals(autoByTypeFieldClass.getName())) {
+                    if (autoByTypeTempClass.getName().equals(autoByTypeFieldClass.getName())) {
 
                         waitInstanceCount++;
 
@@ -538,8 +561,10 @@ public class XmlBeanFactory {
                     // waitForInstanceMap中存的是一级子标签，所以获取到class对应的值就是全类名
                     String autoByTypeTempClassName = waitForInstanceMap.get(key).attributeValue("class");
 
+                    Class autoByTypeTempClass = Class.forName(autoByTypeTempClassName).getInterfaces()[0];
+
                     // 判断waitForInstanceMap中一级子标签配置的类的类型和属性类型是否相同
-                    if (autoByTypeTempClassName.equals(autoByTypeFieldClass.getName())) {
+                    if (autoByTypeTempClass.getName().equals(autoByTypeFieldClass.getName())) {
 
                         throw new MyException(beanName + "-----需要一个[" + autoByTypeFieldClass + "]类型对象，找到多个！");
 
@@ -553,7 +578,7 @@ public class XmlBeanFactory {
 
         }
 
-        if (!injectObjectInWaitMapFlag) { // 不在等待初始化的waitForInstanceMap中，实例化对象
+        if (!injectObjectInWaitMapFlag) { // 要注入的属性不在等待初始化的waitForInstanceMap中，实例化对象
 
             // 遍历完成后，进行自动装配
             instanceObject = instanceClass.newInstance();
@@ -630,8 +655,10 @@ public class XmlBeanFactory {
                     // waitForInstanceMap中存的是一级子标签，所以获取到class对应的值就是全类名
                     String autoByNameTempClassName = childElementFirstLevel.attributeValue("class");
 
+                    Class autoByNameTempClass = Class.forName(autoByNameTempClassName).getInterfaces()[0];
+
                     // 判断类型是否相同，相同的话，终止循环
-                    if (autoByNameTempClassName.equals(autoByNameFieldClass.getName())) {
+                    if (autoByNameTempClass.getName().equals(autoByNameFieldClass.getName())) {
 
                         injectObjectInWaitMapFlag = true;
 

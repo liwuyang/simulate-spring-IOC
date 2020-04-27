@@ -1,6 +1,6 @@
-package com.lwy.service;
+package com.lwy.xml.service;
 
-import com.lwy.dao.UserDao;
+import com.lwy.xml.dao.UserDao;
 
 /**
  * 测试自动装配，byName
@@ -13,10 +13,10 @@ public class UserServiceImplByName implements UserService {
 
     public void find() {
 
+        System.out.println("--------------------UserServiceImplByName");
+
         userDaoImplFirst.query();
         userDaoImplSecond.query();
-
-        System.out.println("--------------------UserServiceImplByName");
 
     }
 }

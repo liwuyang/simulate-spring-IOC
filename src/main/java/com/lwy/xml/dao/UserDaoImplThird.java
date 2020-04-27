@@ -1,4 +1,4 @@
-package com.lwy.dao;
+package com.lwy.xml.dao;
 
 public class UserDaoImplThird implements UserDao {
     public void query() {

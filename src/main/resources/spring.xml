@@ -2,39 +2,43 @@
 
 <beans injectType = "byName"><!--injectType = "byType"-->
 
-    <bean id = "userServiceImplByName" class = "com.lwy.service.UserServiceImplByName">
-    </bean>
+    <bean id = "userControllerXml" class="com.lwy.xml.controller.UserControllerXml"></bean>
 
-    <bean id = "userDaoImplFirst" class = "com.lwy.dao.UserDaoImplFirst">
-    </bean>
-
-    <bean id = "userDaoImplSecond" class = "com.lwy.dao.UserDaoImplSecond">
-    </bean>
-
-    <bean id = "userDaoImplThird" class = "com.lwy.dao.UserDaoImplThird">
-    </bean>
-
-    <bean id = "userDaoImplFourth" class = "com.lwy.dao.UserDaoImplFourth">
-    </bean>
-
-    <bean id = "userServiceImplProp" class="com.lwy.service.UserServiceImplProp">
+    <bean id = "userServiceImplProp" class="com.lwy.xml.service.UserServiceImplProp">
         <property name = "userDaoImplFirst" ref = "userDaoImplFirst"></property>
         <property name = "userDaoImplSecond" ref = "userDaoImplSecond"></property>
     </bean>
 
-    <bean id = "userServiceImplCons" class="com.lwy.service.UserServiceImplCons">
+    <bean id = "userServiceImplCons" class="com.lwy.xml.service.UserServiceImplCons">
         <constructor-arg name = "userDaoImplFirst" ref = "userDaoImplFirst"></constructor-arg>
         <constructor-arg name = "userDaoImplSecond" ref = "userDaoImplSecond"></constructor-arg>
     </bean>
 
-    <bean id = "userServiceImplPropAndCons" class="com.lwy.service.UserServiceImplPropAndCons">
+    <bean id = "userServiceImplPropAndCons" class="com.lwy.xml.service.UserServiceImplPropAndCons">
         <property name = "userDaoImplFirst" ref = "userDaoImplFirst"></property>
         <constructor-arg name = "userDaoImplSecond" ref = "userDaoImplSecond"></constructor-arg>
         <property name = "userDaoImplThird" ref = "userDaoImplThird"></property>
         <constructor-arg name = "userDaoImplFourth" ref = "userDaoImplFourth"></constructor-arg>
     </bean>
 
-    <!--<bean id = "userServiceImplByType" class = "com.lwy.service.UserServiceImplByType">
+    <!--<bean id = "userServiceImplByType" class = "UserServiceImplByType">
     </bean>-->
+
+    <bean id = "userServiceImplByName" class = "com.lwy.xml.service.UserServiceImplByName">
+    </bean>
+
+    <bean id = "userDaoImplFirst" class = "com.lwy.xml.dao.UserDaoImplFirst">
+    </bean>
+
+    <bean id = "userDaoImplSecond" class = "com.lwy.xml.dao.UserDaoImplSecond">
+    </bean>
+
+    <bean id = "userDaoImplThird" class = "com.lwy.xml.dao.UserDaoImplThird">
+    </bean>
+
+    <bean id = "userDaoImplFourth" class = "com.lwy.xml.dao.UserDaoImplFourth">
+    </bean>
+
+
 
 </beans>
